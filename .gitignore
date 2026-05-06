@@ -1,0 +1,7 @@
+# Ignorer un dossier spécifique
+/node_modules/
+/build/
+# Ignorer tous les fichiers avec une extension spécifique
+/package-lock.json/
+/package.json/
+/venv/
