@@ -1,7 +1,209 @@
 <!-- templates/index.html -->
-
 {% extends "_base.html" %}
+{% load static %}
 
 {% block content %}
-<h1 class="text-3xl text-green-800">Django + Tailwind CSS + Flowbite</h1>
+
+<!-- Hero Section avec fond rouge et jaune -->
+<section class="bg-gradient-to-br from-red-700 to-red-600 dark:from-red-900 dark:to-red-800">
+    <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+        <div class="mr-auto place-self-center lg:col-span-7">
+            <h1
+                class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-white">
+                Étudier en Chine :
+            </h1>
+            <br>
+            <h1 class="max-w-2xl mb-6 font-light text-red-100 lg:mb-8 md:text-lg lg:text-xl">
+                <span class="text-yellow-300">Votre avenir commence ici</span>
+            </h1>
+
+            <p class="max-w-2xl mb-4 font-light text-red-100 lg:mb-8 md:text-lg lg:text-xl">
+                Découvrez les meilleures universités chinoises, des bourses d'études et un accompagnement personnalisé
+                pour réaliser votre rêve d'étudier en Chine.
+            </p>
+            <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+                <a href="#"
+                    class="inline-flex items-center justify-center w-full px-5 py-3 text-base font-medium text-center text-red-700 bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 sm:w-auto transition duration-300">
+                    Commencer maintenant
+                    <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+                <a href="#"
+                    class="inline-flex items-center justify-center w-full px-5 py-3 text-base font-medium text-center text-red-700 bg-white border border-red-300 rounded-lg hover:bg-red-50 focus:ring-4 focus:ring-red-200 sm:w-auto transition duration-300">
+                    En savoir plus
+                </a>
+            </div>
+        </div>
+        <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+            <img src="https://flagcdn.com/w320/cn.png" alt="Drapeau de la Chine" class="rounded-lg shadow-2xl">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                Pourquoi choisir la Chine ?
+            </h2>
+            <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400 sm:mt-4">
+                Des opportunités uniques pour une carrière internationale
+            </p>
+        </div>
+        <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+
+            <!-- Feature 1 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-red-100 lg:h-12 lg:w-12 group-hover:bg-red-200 transition duration-300">
+                    <svg class="w-5 h-5 text-red-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356.257l4 4a1 1 0 011.414 0l4-4a.999.999 0 01.356-.257l2.638-1.131a1 1 0 000-1.84l-7-3z">
+                        </path>
+                        <path
+                            d="M5.25 10.051l-2.638 1.13a1 1 0 000 1.84l7 3a1 1 0 00.788 0l7-3a1 1 0 000-1.84L14.75 10.05l-4 4a1 1 0 01-1.414 0l-4-4z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Universités d'élite</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Accédez aux meilleures universités chinoises classées parmi les top mondiaux (Tsinghua, Peking,
+                    Fudan)
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-yellow-100 lg:h-12 lg:w-12 group-hover:bg-yellow-200 transition duration-300">
+                    <svg class="w-5 h-5 text-yellow-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Bourses disponibles</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Bourses du gouvernement chinois (CSC), bourses provinciales et universitaires jusqu'à 100%
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-red-100 lg:h-12 lg:w-12 group-hover:bg-red-200 transition duration-300">
+                    <svg class="w-5 h-5 text-red-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Accompagnement complet</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    De la constitution du dossier à l'installation en Chine, nous vous guidons à chaque étape
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-yellow-100 lg:h-12 lg:w-12 group-hover:bg-yellow-200 transition duration-300">
+                    <svg class="w-5 h-5 text-yellow-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"></path>
+                        <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"></path>
+                        <path d="M3 2v3c0 1.657 3.134 3 7 3s7-1.343 7-3V2c0 1.657-3.134 3-7 3S3 3.657 3 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Formation linguistique</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Cours de chinois (HSK) inclus dans votre programme d'études
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-red-100 lg:h-12 lg:w-12 group-hover:bg-red-200 transition duration-300">
+                    <svg class="w-5 h-5 text-red-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Réseau international</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Rejoignez une communauté de 500 000+ étudiants internationaux en Chine
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="flex flex-col items-center text-center group">
+                <div
+                    class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-yellow-100 lg:h-12 lg:w-12 group-hover:bg-yellow-200 transition duration-300">
+                    <svg class="w-5 h-5 text-yellow-600 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                            clip-rule="evenodd"></path>
+                        <path
+                            d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold dark:text-white">Opportunités de carrière</h3>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Stages en entreprise et opportunités d'emploi après diplôme en Chine
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section avec fond rouge et bouton jaune -->
+<section class="bg-red-700 dark:bg-red-900">
+    <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
+        <div class="mx-auto max-w-screen-md text-center">
+            <h2 class="mb-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                Prêt à commencer votre aventure ?
+            </h2>
+            <p class="mb-8 font-light text-red-100 sm:text-xl">
+                Inscrivez-vous maintenant et recevez un guide gratuit sur les études en Chine
+            </p>
+            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+                <a href="#"
+                    class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-red-700 bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 transition duration-300">
+                    S'inscrire gratuitement
+                    <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Petite bande étoiles jaunes (5 étoiles comme le drapeau) -->
+<div class="bg-red-800 py-2">
+    <div class="max-w-screen-xl mx-auto px-4 flex justify-center space-x-4">
+        <span class="text-yellow-400 text-2xl">★</span>
+        <span class="text-yellow-400 text-2xl">★</span>
+        <span class="text-yellow-400 text-2xl">★</span>
+        <span class="text-yellow-400 text-2xl">★</span>
+        <span class="text-yellow-400 text-2xl">★</span>
+    </div>
+</div>
+
 {% endblock content %}

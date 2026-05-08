@@ -1,0 +1,201 @@
+<!-- templates/universities/list.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Header Section -->
+<section class="bg-gradient-to-r from-red-700 to-red-600 py-12">
+    <div class="max-w-screen-xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Universités Partenaires</h1>
+        <p class="text-xl text-red-100 max-w-2xl mx-auto">
+            Découvrez les meilleures universités chinoises et trouvez celle qui correspond à vos ambitions
+        </p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="py-8 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <input type="text" placeholder="Rechercher une université..."
+                class="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 w-full md:w-96 focus:ring-2 focus:ring-red-500 focus:border-red-500">
+            <select
+                class="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-red-500">
+                <option>Toutes les villes</option>
+                <option>Pékin</option>
+                <option>Shanghai</option>
+                <option>Guangzhou</option>
+                <option>Shenzhen</option>
+                <option>Wuhan</option>
+            </select>
+            <button class="bg-red-700 text-white px-6 py-3 rounded-lg hover:bg-red-800 transition duration-300">
+                Rechercher
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Universities Grid -->
+<section class="py-12">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- University Card 1 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400" alt="Tsinghua University"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Université Tsinghua</h3>
+                        <span class="bg-yellow-400 text-red-700 text-xs font-bold px-2 py-1 rounded">Top 1</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Pékin</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        L'une des universités les plus prestigieuses d'Asie, réputée en ingénierie et technologie.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Logement inclus</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥28,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- University Card 2 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1529429617124-95b109e86bb8?w=400" alt="Peking University"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Université de Pékin</h3>
+                        <span class="bg-yellow-400 text-red-700 text-xs font-bold px-2 py-1 rounded">Top 2</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Pékin</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Excellence en sciences humaines, droit et sciences politiques.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Campus historique</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥26,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- University Card 3 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1549608300-6a3c7c6d8b1f?w=400" alt="Fudan University"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Université Fudan</h3>
+                        <span class="bg-yellow-400 text-red-700 text-xs font-bold px-2 py-1 rounded">Top 3</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Shanghai</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Réputée en économie, commerce international et médecine.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Ville dynamique</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥30,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- University Card 4 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?w=400" alt="Zhejiang University"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Université du Zhejiang</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Hangzhou</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Excellence en ingénierie, agriculture et sciences informatiques.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Ville pittoresque</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥24,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- University Card 5 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1576141546124-5f7232535edc?w=400" alt="Shanghai Jiao Tong"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Jiao Tong Shanghai</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Shanghai</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Réputée en ingénierie navale, mécanique et biotechnologie.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Double diplôme</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥29,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- University Card 6 -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=400" alt="Wuhan University"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Université de Wuhan</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">📍 Wuhan</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Campus magnifique, excellence en droit et sciences environnementales.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Bourses CSC</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Campus fleuri</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-red-700">¥22,000</span>
+                        <a href="#" class="text-red-700 hover:text-red-800 font-medium">En savoir plus →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-12 space-x-2">
+            <button
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-700 hover:text-white transition">«</button>
+            <button class="px-4 py-2 bg-red-700 text-white rounded-lg">1</button>
+            <button
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-700 hover:text-white transition">2</button>
+            <button
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-700 hover:text-white transition">3</button>
+            <button
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-700 hover:text-white transition">»</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+<!-- templates/bourses/list.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Header Section -->
+<section class="bg-gradient-to-r from-yellow-500 to-yellow-400 py-12">
+    <div class="max-w-screen-xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-red-700 mb-4">Bourses d'Études</h1>
+        <p class="text-xl text-red-800 max-w-2xl mx-auto">
+            Financez vos études en Chine grâce aux nombreuses bourses disponibles
+        </p>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-8 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+                <div class="text-3xl font-bold text-red-700">5000+</div>
+                <div class="text-gray-600 dark:text-gray-300">Bourses/an</div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+                <div class="text-3xl font-bold text-red-700">100%</div>
+                <div class="text-gray-600 dark:text-gray-300">Frais possibles</div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+                <div class="text-3xl font-bold text-red-700">¥50k+</div>
+                <div class="text-gray-600 dark:text-gray-300">Montant max/an</div>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+                <div class="text-3xl font-bold text-red-700">289</div>
+                <div class="text-gray-600 dark:text-gray-300">Universités</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bourses List -->
+<section class="py-12">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <div class="space-y-6">
+
+            <!-- Bourse 1 - CSC -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Bourse du Gouvernement Chinois
+                                (CSC)</h3>
+                            <span class="bg-red-700 text-white text-xs px-2 py-1 rounded-full">Recommandée</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3">
+                            La bourse la plus prestigieuse offerte par le gouvernement chinois aux étudiants
+                            internationaux.
+                        </p>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <span class="text-gray-500">💰 Couvre frais de scolarité + logement + assurance</span>
+                            <span class="text-gray-500">📅 Date limite: 15 Avril 2025</span>
+                        </div>
+                    </div>
+                    <a href="#"
+                        class="bg-red-700 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition whitespace-nowrap">
+                        Postuler →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bourse 2 - Confucius -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Bourse de l'Institut Confucius</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3">
+                            Pour les étudiants souhaitant étudier le chinois ou devenir professeurs de langue chinoise.
+                        </p>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <span class="text-gray-500">💰 Couvre frais + logement + allocation mensuelle</span>
+                            <span class="text-gray-500">📅 Date limite: 30 Mai 2025</span>
+                        </div>
+                    </div>
+                    <a href="#"
+                        class="bg-red-700 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition whitespace-nowrap">
+                        Postuler →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bourse 3 - Province -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Bourses Provinciales</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3">
+                            Offertes par les gouvernements provinciaux pour attirer les talents internationaux.
+                        </p>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <span class="text-gray-500">💰 Couvre 50-100% des frais de scolarité</span>
+                            <span class="text-gray-500">📅 Date limite: Variable selon province</span>
+                        </div>
+                    </div>
+                    <a href="#"
+                        class="bg-red-700 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition whitespace-nowrap">
+                        Postuler →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bourse 4 - Universitaire -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Bourses Universitaires</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3">
+                            Chaque université propose ses propres bourses pour attirer les meilleurs étudiants.
+                        </p>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <span class="text-gray-500">💰 Montant variable selon l'université</span>
+                            <span class="text-gray-500">📅 Contactez l'université directement</span>
+                        </div>
+                    </div>
+                    <a href="#"
+                        class="bg-red-700 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition whitespace-nowrap">
+                        Postuler →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="bg-red-700 py-12 mt-8">
+    <div class="max-w-screen-xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">Besoin d'aide pour votre candidature ?</h2>
+        <p class="text-red-100 mb-6">Nos conseillers vous accompagnent gratuitement dans vos démarches</p>
+        <a href="#"
+            class="bg-yellow-400 text-red-700 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition">
+            Prendre rendez-vous
+        </a>
+    </div>
+</section>
+
+{% endblock %}
