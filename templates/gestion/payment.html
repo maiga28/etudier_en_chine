@@ -1,0 +1,305 @@
+<!-- templates/gestion/payment.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- En-tête -->
+        <div class="text-center mb-8">
+            <div class="h-16 w-16 bg-yellow-400 rounded-full flex items-center justify-center mx-auto">
+                <span class="text-red-700 text-2xl font-bold">💰</span>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-4">Frais de dossier</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">
+                Choisissez votre moyen de paiement pour finaliser votre inscription
+            </p>
+        </div>
+
+        <!-- Récapitulatif -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📋 Récapitulatif</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Demandeur :</span>
+                    <span class="font-medium">{{ application.family_name }} {{ application.given_name }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Email :</span>
+                    <span class="font-medium">{{ application.personal_email }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Nationalité :</span>
+                    <span class="font-medium">{{ application.nationality }}</span>
+                </div>
+                <div class="border-t border-gray-200 dark:border-gray-700 my-3 pt-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-900 dark:text-white font-bold">Montant à payer :</span>
+                        <span class="text-red-600 font-bold text-xl">{{ payment.amount }} €</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options de paiement -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white px-6 pt-6 pb-2">💳 Choisissez votre moyen de
+                paiement</h2>
+
+            <!-- Stripe / Carte Bancaire -->
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment_method" value="stripe"
+                            class="payment-radio w-5 h-5 text-red-600" data-method="stripe" checked>
+                        <div class="ml-3 flex-1">
+                            <div class="flex items-center">
+                                <svg class="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="none">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" fill="#635BFF" />
+                                    <path d="M7 12h10M12 7v10" stroke="white" stroke-width="2" />
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">Carte bancaire (Stripe)</p>
+                                    <p class="text-sm text-gray-500">Visa, Mastercard, American Express</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Orange Money -->
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment_method" value="orange_money"
+                            class="payment-radio w-5 h-5 text-red-600" data-method="orange_money">
+                        <div class="ml-3 flex-1">
+                            <div class="flex items-center">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Orange_Money_logo.svg/120px-Orange_Money_logo.svg.png"
+                                    alt="Orange Money" class="h-8 mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">Orange Money</p>
+                                    <p class="text-sm text-gray-500">Paiement mobile sécurisé</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- MTN Mobile Money -->
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment_method" value="mtn_money"
+                            class="payment-radio w-5 h-5 text-red-600" data-method="mtn_money">
+                        <div class="ml-3 flex-1">
+                            <div class="flex items-center">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/MTN_Group.svg/120px-MTN_Group.svg.png"
+                                    alt="MTN Money" class="h-8 mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">MTN Mobile Money</p>
+                                    <p class="text-sm text-gray-500">Paiement mobile sécurisé</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Wave -->
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment_method" value="wave"
+                            class="payment-radio w-5 h-5 text-red-600" data-method="wave">
+                        <div class="ml-3 flex-1">
+                            <div class="flex items-center">
+                                <svg class="w-8 h-8 mr-3 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">Wave</p>
+                                    <p class="text-sm text-gray-500">Paiement mobile rapide</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire Stripe (carte) -->
+        <div id="stripe-form" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-6">
+            <h3 class="text-md font-semibold text-gray-900 dark:text-white mb-3">💳 Informations de carte</h3>
+            <div id="card-element" class="p-3 border border-gray-300 rounded-lg"></div>
+            <div id="card-errors" class="text-red-600 text-sm mt-2" role="alert"></div>
+        </div>
+
+        <!-- Formulaire Mobile Money -->
+        <div id="mobile-money-form" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-6 hidden">
+            <h3 class="text-md font-semibold text-gray-900 dark:text-white mb-3">📱 Informations Mobile Money</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">Numéro de téléphone *</label>
+                    <input type="tel" id="phone_number" placeholder="+XXX XXX XXX XXX"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    <p class="text-xs text-gray-500 mt-1">Format international recommandé</p>
+                </div>
+                <div id="operator-info" class="text-sm text-gray-600">
+                    <p>📌 Vous recevrez un code de confirmation sur votre téléphone</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bouton de paiement -->
+        <button id="pay-button"
+            class="w-full mt-6 bg-red-700 text-white py-3 rounded-lg hover:bg-red-800 transition text-lg font-semibold">
+            Payer {{ payment.amount }} €
+        </button>
+
+        <p class="text-xs text-gray-500 text-center mt-4">
+            🔒 Paiement sécurisé. Vos informations ne sont pas stockées.
+        </p>
+
+        <div class="text-center mt-6">
+            <a href="{% url 'gestion' %}" class="text-sm text-gray-500 hover:text-gray-700">
+                ← Retour sans payer
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe JS -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialisation Stripe
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+                '::placeholder': { color: '#aab7c4' }
+            }
+        }
+    });
+    cardElement.mount('#card-element');
+
+    // Éléments DOM
+    const payButton = document.getElementById('pay-button');
+    const stripeForm = document.getElementById('stripe-form');
+    const mobileMoneyForm = document.getElementById('mobile-money-form');
+    const radioButtons = document.querySelectorAll('.payment-radio');
+
+    let currentMethod = 'stripe';
+    let paymentIntentClientSecret = null;
+
+    // Gestion du changement de méthode de paiement
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function () {
+            currentMethod = this.value;
+
+            if (currentMethod === 'stripe') {
+                stripeForm.classList.remove('hidden');
+                mobileMoneyForm.classList.add('hidden');
+                payButton.textContent = 'Payer par carte {{ payment.amount }} €';
+            } else {
+                stripeForm.classList.add('hidden');
+                mobileMoneyForm.classList.remove('hidden');
+                payButton.textContent = `Payer par ${getMethodName(currentMethod)} {{ payment.amount }} €`;
+            }
+        });
+    });
+
+    function getMethodName(method) {
+        const names = {
+            'orange_money': 'Orange Money',
+            'mtn_money': 'MTN Mobile Money',
+            'wave': 'Wave'
+        };
+        return names[method] || 'Mobile Money';
+    }
+
+    // Création du PaymentIntent pour Stripe
+    async function createPaymentIntent() {
+        const response = await fetch("{% url 'create_payment_intent' application.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            }
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        return data.clientSecret;
+    }
+
+    // Paiement Stripe
+    async function payWithStripe() {
+        payButton.disabled = true;
+        payButton.textContent = 'Traitement en cours...';
+
+        try {
+            const clientSecret = await createPaymentIntent();
+            const { error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: { card: cardElement }
+            });
+
+            if (error) {
+                document.getElementById('card-errors').textContent = error.message;
+                payButton.disabled = false;
+                payButton.textContent = 'Payer {{ payment.amount }} €';
+            } else {
+                window.location.href = "{% url 'payment_success' application.id %}";
+            }
+        } catch (err) {
+            document.getElementById('card-errors').textContent = err.message;
+            payButton.disabled = false;
+            payButton.textContent = 'Payer {{ payment.amount }} €';
+        }
+    }
+
+    // Paiement Mobile Money (simulation)
+    async function payWithMobileMoney() {
+        const phone = document.getElementById('phone_number').value;
+
+        if (!phone) {
+            alert('Veuillez entrer votre numéro de téléphone');
+            return;
+        }
+
+        payButton.disabled = true;
+        payButton.textContent = 'Envoi de la demande...';
+
+        // Simulation d'appel API
+        setTimeout(() => {
+            alert(`✅ Demande de paiement envoyée à ${phone}\n📌 Un code de confirmation vous sera envoyé par SMS.`);
+            window.location.href = "{% url 'payment_success' application.id %}";
+        }, 1500);
+    }
+
+    // Gestion du clic sur le bouton
+    payButton.addEventListener('click', () => {
+        if (currentMethod === 'stripe') {
+            payWithStripe();
+        } else {
+            payWithMobileMoney();
+        }
+    });
+</script>
+
+<style>
+    .payment-radio:checked {
+        accent-color: #dc2626;
+    }
+
+    #card-element.StripeElement--focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+    }
+</style>
+{% endblock %}

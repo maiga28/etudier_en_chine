@@ -1,6 +1,24 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
-from django.shortcuts import render
+# core/views.py - Ajoutez cette fonction
 
+@login_required
 def gestion(request):
-    return render(request, 'gestion.html')
+    """Tableau de bord de gestion des demandes"""
+    from main_apps.gestion.models import StudentApplication, PhysicalExamination
+    
+    applications = StudentApplication.objects.all().order_by('-application_date')
+    total_applications = applications.count()
+    pending_applications = applications.filter(status='PENDING').count()
+    accepted_applications = applications.filter(status='ACCEPTED').count()
+    physical_exams_count = PhysicalExamination.objects.count()
+    
+    context = {
+        'applications': applications,
+        'total_applications': total_applications,
+        'pending_applications': pending_applications,
+        'accepted_applications': accepted_applications,
+        'physical_exams_count': physical_exams_count,
+    }
+    return render(request, 'gestion/gestion.html', context)

@@ -1,0 +1,36 @@
+<!-- templates/gestion/application_success.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-16 px-4 text-center">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Demande envoyée avec succès !</h1>
+        <p class="text-gray-600 mb-4">
+            Merci {{ application.family_name }} {{ application.given_name }}, votre demande a bien été enregistrée.
+        </p>
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <p class="text-gray-600">📧 Un email de confirmation a été envoyé à <strong>{{ application.personal_email
+                    }}</strong></p>
+            <p class="text-gray-600 mt-2">📋 Votre numéro de dossier : <strong>#{{ application.id }}</strong></p>
+        </div>
+        <p class="text-gray-500 text-sm mb-6">
+            Notre équipe examinera votre dossier et vous contactera dans les plus brefs délais.
+        </p>
+        <div class="flex justify-center space-x-3">
+            <a href="{% url 'index' %}" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                Retour à l'accueil
+            </a>
+            <a href="{% url 'physical_exam_create' %}?application_id={{ application.id }}"
+                class="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800">
+                Remplir l'examen physique
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

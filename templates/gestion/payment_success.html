@@ -1,0 +1,73 @@
+<!-- templates/gestion/payment_success.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-4">
+    <div class="max-w-2xl mx-auto text-center">
+        <!-- Icône de succès -->
+        <div class="mb-6">
+            <div class="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Titre -->
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Paiement réussi ! 🎉
+        </h1>
+
+        <!-- Message -->
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+            Merci {{ application.family_name }} {{ application.given_name }}, votre paiement a été confirmé avec succès.
+        </p>
+
+        <!-- Détails du paiement -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6 text-left">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📋 Récapitulatif</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Numéro de dossier :</span>
+                    <span class="font-medium">#{{ application.id }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Montant payé :</span>
+                    <span class="font-medium text-green-600">{{ payment.amount }} €</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Date :</span>
+                    <span class="font-medium">{{ payment.paid_at|date:"d/m/Y H:i"|default:"Maintenant" }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Statut :</span>
+                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">PAYÉ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prochaines étapes -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-6 text-left">
+            <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">📌 Prochaines étapes</h3>
+            <ul class="text-blue-700 dark:text-blue-400 text-sm space-y-2">
+                <li>✓ Notre équipe va examiner votre dossier sous 48h</li>
+                <li>✓ Vous recevrez un email de confirmation</li>
+                <li>✓ Vous serez contacté pour compléter votre examen physique</li>
+            </ul>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="{% url 'gestion' %}"
+                class="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition">
+                Tableau de bord
+            </a>
+            <a href="{% url 'physical_exam_create' %}?application_id={{ application.id }}"
+                class="px-6 py-2 border border-red-700 text-red-700 rounded-lg hover:bg-red-50 transition">
+                Remplir mon examen physique
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

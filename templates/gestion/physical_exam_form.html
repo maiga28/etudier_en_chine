@@ -1,0 +1,224 @@
+<!-- templates/gestion/physical_exam_form.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-red-700 to-red-600 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white">Formulaire d'Examen Physique</h1>
+            <p class="text-red-100">Pour l'étudiant: <strong>{{ application.family_name }} {{ application.given_name
+                    }}</strong></p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="p-6 space-y-8">
+            {% csrf_token %}
+            <input type="hidden" name="application_id" value="{{ application.id }}">
+
+            <!-- Informations de base -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Informations générales</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nom complet *</label>
+                        <input type="text" name="name"
+                            value="{{ application.family_name }} {{ application.given_name }}" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Genre *</label>
+                        <select name="gender" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Sélectionnez</option>
+                            <option value="M" {% if application.gender == 'M' %}selected{% endif %}>Masculin</option>
+                            <option value="F" {% if application.gender == 'F' %}selected{% endif %}>Féminin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Date de naissance *</label>
+                        <input type="date" name="birth_date" value="{{ application.birth_date|date:'Y-m-d' }}" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nationalité *</label>
+                        <input type="text" name="nationality" value="{{ application.nationality }}" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Lieu de naissance</label>
+                        <input type="text" name="birth_place" value="{{ application.place_of_birth }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Groupe sanguin</label>
+                        <select name="blood_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Non renseigné</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="AB">AB</option>
+                            <option value="O">O</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-gray-700 font-medium mb-1">Adresse actuelle</label>
+                        <textarea name="present_mailing_address" rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">{{ application.current_address|default:application.home_address_street }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signes vitaux -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Signes vitaux</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Taille (cm)</label>
+                        <input type="number" name="height_cm" step="0.1"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Poids (kg)</label>
+                        <input type="number" name="weight_kg" step="0.1"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Pression systolique</label>
+                        <input type="number" name="blood_pressure_systolic"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Pression diastolique</label>
+                        <input type="number" name="blood_pressure_diastolic"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vision -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Examen de la vision</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><input type="text" name="vision_left" placeholder="Vision gauche"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="vision_right" placeholder="Vision droite"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="corrected_vision_left" placeholder="Vision corrigée gauche"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="corrected_vision_right" placeholder="Vision corrigée droite"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="colour_sense" placeholder="Vision des couleurs"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                </div>
+            </div>
+
+            <!-- Examens médicaux -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Examens médicaux</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><input type="text" name="development" placeholder="Développement"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="nourishment" placeholder="Nutrition"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="heart" placeholder="Cœur" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div><input type="text" name="lungs" placeholder="Poumons"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="abdomen" placeholder="Abdomen"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div><input type="text" name="skin" placeholder="Peau" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div><input type="text" name="neck" placeholder="Cou" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div><input type="text" name="spine" placeholder="Colonne vertébrale"
+                            class="w-full px-3 py-2 border rounded-lg"></div>
+                    <div class="col-span-2">
+                        <textarea name="other_findings" rows="2" placeholder="Autres observations"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examens complémentaires -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Examens complémentaires</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Résultat ECG</label>
+                        <textarea name="ecg_result" rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Radiographie pulmonaire</label>
+                        <textarea name="chest_xray_result" rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Rapport radiographie (PDF)</label>
+                        <input type="file" name="chest_xray_report" accept=".pdf,.jpg,.png"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Test VIH</label>
+                            <select name="hiv_test_result" class="w-full px-3 py-2 border rounded-lg">
+                                <option value="">Non renseigné</option>
+                                <option value="NEGATIVE">Négatif</option>
+                                <option value="POSITIVE">Positif</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Test Syphilis</label>
+                            <select name="syphilis_test_result" class="w-full px-3 py-2 border rounded-lg">
+                                <option value="">Non renseigné</option>
+                                <option value="NEGATIVE">Négatif</option>
+                                <option value="POSITIVE">Positif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Rapport de laboratoire</label>
+                        <input type="file" name="lab_report" accept=".pdf,.jpg,.png"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avis médical -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Avis médical</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <textarea name="medical_opinion" rows="3" placeholder="Avis du médecin"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="is_medically_fit" class="mr-2">
+                            <span class="text-gray-700">L'étudiant est médicalement apte</span>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="text" name="physician_signature" placeholder="Signature du médecin"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Date d'examen</label>
+                        <input type="date" name="examination_date"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'application_detail' application.id %}"
+                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Annuler
+                </a>
+                <button type="submit" class="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800">
+                    Enregistrer l'examen physique
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

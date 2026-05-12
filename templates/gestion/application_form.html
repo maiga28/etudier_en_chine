@@ -1,0 +1,482 @@
+<!-- templates/gestion/application_form.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-red-700 to-red-600 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white">Formulaire d'Admission</h1>
+            <p class="text-red-100">Veuillez remplir tous les champs obligatoires (*)</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" class="p-6 space-y-8" id="applicationForm">
+            {% csrf_token %}
+
+            <!-- Informations personnelles -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Informations personnelles</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nom de famille *</label>
+                        <input type="text" name="family_name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                        <p class="text-xs text-gray-500 mt-1">Comme sur le passeport</p>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Prénom *</label>
+                        <input type="text" name="given_name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                        <p class="text-xs text-gray-500 mt-1">Comme sur le passeport</p>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nom chinois</label>
+                        <input type="text" name="chinese_name"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Genre *</label>
+                        <select name="gender" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Sélectionnez</option>
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Situation matrimoniale *</label>
+                        <select name="marital_status" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Sélectionnez</option>
+                            <option value="SINGLE">Célibataire</option>
+                            <option value="MARRIED">Marié(e)</option>
+                            <option value="DIVORCED">Divorcé(e)</option>
+                            <option value="WIDOWED">Veuf/Veuve</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nationalité *</label>
+                        <input type="text" name="nationality" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Pays de naissance *</label>
+                        <input type="text" name="country_of_birth" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Date de naissance *</label>
+                        <input type="date" name="birth_date" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Lieu de naissance *</label>
+                        <input type="text" name="place_of_birth" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Ville, Province">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Langue maternelle *</label>
+                        <input type="text" name="native_language" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Plus haut niveau d'éducation *</label>
+                        <select name="highest_education" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Sélectionnez</option>
+                            <option value="HIGH_SCHOOL">Lycée</option>
+                            <option value="BACHELOR">Licence</option>
+                            <option value="MASTER">Master</option>
+                            <option value="DOCTORATE">Doctorat</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Religion</label>
+                        <input type="text" name="religion" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Profession</label>
+                        <input type="text" name="occupation" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">État de santé *</label>
+                        <select name="health_status" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="EXCELLENT">Excellent</option>
+                            <option value="GOOD">Bon</option>
+                            <option value="FAIR">Moyen</option>
+                            <option value="POOR">Mauvais</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="is_emigrant_from_china" class="mr-2">
+                            <span class="text-gray-700">Êtes-vous émigrant de Chine continentale, Hong Kong, Macao ou
+                                Taïwan ?</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Loisirs</label>
+                        <input type="text" name="hobby" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passeport -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Passeport et Visa</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Numéro de passeport *</label>
+                        <input type="text" name="passport_number" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Date d'expiration *</label>
+                        <input type="date" name="passport_expiration_date" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formation -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Formation académique</h2>
+                <div id="education-list">
+                    <div class="education-entry bg-gray-50 p-4 rounded-lg mb-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input type="number" placeholder="Année de début"
+                                class="ed-from-year border rounded-lg px-3 py-2">
+                            <input type="number" placeholder="Année de fin"
+                                class="ed-to-year border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Nom de l'établissement"
+                                class="ed-school border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Domaine d'étude"
+                                class="ed-field border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Diplôme obtenu"
+                                class="ed-diploma border rounded-lg px-3 py-2">
+                        </div>
+                        <button type="button" class="remove-education text-red-600 text-sm mt-2">Supprimer</button>
+                    </div>
+                </div>
+                <button type="button" id="add-education" class="text-red-600 hover:text-red-700 text-sm mt-2">
+                    + Ajouter une formation
+                </button>
+                <input type="hidden" name="education_history" id="education_history">
+            </div>
+
+            <!-- Expérience professionnelle -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Expérience professionnelle</h2>
+                <div id="work-list">
+                    <div class="work-entry bg-gray-50 p-4 rounded-lg mb-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input type="number" placeholder="Année de début"
+                                class="work-from-year border rounded-lg px-3 py-2">
+                            <input type="number" placeholder="Année de fin"
+                                class="work-to-year border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Nom de l'entreprise"
+                                class="work-company border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Poste occupé"
+                                class="work-position border rounded-lg px-3 py-2">
+                        </div>
+                        <button type="button" class="remove-work text-red-600 text-sm mt-2">Supprimer</button>
+                    </div>
+                </div>
+                <button type="button" id="add-work" class="text-red-600 hover:text-red-700 text-sm mt-2">
+                    + Ajouter une expérience
+                </button>
+                <input type="hidden" name="work_experience" id="work_experience">
+            </div>
+
+            <!-- Famille -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Membres de la famille (minimum 2)</h2>
+                <div id="family-list">
+                    <div class="family-entry bg-gray-50 p-4 rounded-lg mb-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <select class="family-type border rounded-lg px-3 py-2">
+                                <option value="">Lien de parenté</option>
+                                <option value="FATHER">Père</option>
+                                <option value="MOTHER">Mère</option>
+                                <option value="BROTHER">Frère</option>
+                                <option value="SISTER">Sœur</option>
+                                <option value="SPOUSE">Conjoint(e)</option>
+                                <option value="CHILD">Enfant</option>
+                            </select>
+                            <input type="text" placeholder="Nom complet"
+                                class="family-name border rounded-lg px-3 py-2">
+                            <input type="tel" placeholder="Téléphone" class="family-phone border rounded-lg px-3 py-2">
+                            <input type="email" placeholder="Email" class="family-email border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Profession"
+                                class="family-position border rounded-lg px-3 py-2">
+                            <input type="text" placeholder="Lieu de travail"
+                                class="family-workplace border rounded-lg px-3 py-2">
+                        </div>
+                        <button type="button" class="remove-family text-red-600 text-sm mt-2">Supprimer</button>
+                    </div>
+                </div>
+                <button type="button" id="add-family" class="text-red-600 hover:text-red-700 text-sm mt-2">
+                    + Ajouter un membre
+                </button>
+                <input type="hidden" name="family_members" id="family_members">
+            </div>
+
+            <!-- Soutien financier -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Soutien financier</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nom du garant *</label>
+                        <input type="text" name="guarantor_name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Adresse du garant *</label>
+                        <textarea name="guarantor_address" rows="2" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Téléphone du garant *</label>
+                        <input type="tel" name="guarantor_tel" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Lien avec le garant *</label>
+                        <input type="text" name="guarantor_relationship" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Organisation du garant</label>
+                        <input type="text" name="guarantor_organization"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Email du garant</label>
+                        <input type="email" name="guarantor_email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adresses -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Adresses</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Adresse domicile (rue) *</label>
+                        <textarea name="home_address_street" rows="2" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Ville/Province *</label>
+                        <input type="text" name="home_address_city_province" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Pays *</label>
+                        <input type="text" name="home_address_country" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Téléphone domicile *</label>
+                        <input type="tel" name="home_address_phone" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Mobile</label>
+                        <input type="tel" name="home_address_mobile"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Code postal</label>
+                        <input type="text" name="home_address_zipcode"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="same_current_as_home" id="same_address" class="mr-2" checked>
+                            <span class="text-gray-700">Mon adresse actuelle est identique à mon adresse domicile</span>
+                        </label>
+                    </div>
+                    <div class="col-span-2" id="current_address_div" style="display: none;">
+                        <label class="block text-gray-700 font-medium mb-1">Adresse actuelle</label>
+                        <textarea name="current_address" rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Email personnel *</label>
+                        <input type="email" name="personal_email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Réseaux sociaux -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Réseaux sociaux</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Facebook</label>
+                        <input type="text" name="facebook_account"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">WeChat</label>
+                        <input type="text" name="wechat_account"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">LinkedIn</label>
+                        <input type="text" name="linkedin_account"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Twitter</label>
+                        <input type="text" name="twitter_account"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">QQ</label>
+                        <input type="text" name="qq_account" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">MSN</label>
+                        <input type="text" name="msn_account"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-end space-x-3">
+                <a href="/" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Annuler</a>
+                <button type="submit" class="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800">
+                    Soumettre la demande
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Gestion de l'adresse actuelle
+    const sameAddressCheckbox = document.getElementById('same_address');
+    const currentAddressDiv = document.getElementById('current_address_div');
+
+    sameAddressCheckbox.addEventListener('change', function () {
+        currentAddressDiv.style.display = this.checked ? 'none' : 'block';
+    });
+
+    // Collection des formations
+    let educationEntries = [];
+    let workEntries = [];
+    let familyEntries = [];
+
+    // Ajouter une formation
+    document.getElementById('add-education').addEventListener('click', function () {
+        const container = document.getElementById('education-list');
+        const newEntry = container.children[0].cloneNode(true);
+        clearEducationFields(newEntry);
+        container.appendChild(newEntry);
+        attachRemoveEducationListener(newEntry);
+    });
+
+    function clearEducationFields(entry) {
+        entry.querySelectorAll('input').forEach(input => input.value = '');
+    }
+
+    function attachRemoveEducationListener(entry) {
+        entry.querySelector('.remove-education').addEventListener('click', function () {
+            entry.remove();
+        });
+    }
+
+    document.querySelectorAll('.remove-education').forEach(btn => {
+        btn.addEventListener('click', function () {
+            this.closest('.education-entry').remove();
+        });
+    });
+
+    // Ajouter une expérience
+    document.getElementById('add-work').addEventListener('click', function () {
+        const container = document.getElementById('work-list');
+        const newEntry = container.children[0].cloneNode(true);
+        clearWorkFields(newEntry);
+        container.appendChild(newEntry);
+        attachRemoveWorkListener(newEntry);
+    });
+
+    function clearWorkFields(entry) {
+        entry.querySelectorAll('input').forEach(input => input.value = '');
+    }
+
+    function attachRemoveWorkListener(entry) {
+        entry.querySelector('.remove-work').addEventListener('click', function () {
+            entry.remove();
+        });
+    }
+
+    // Ajouter un membre de famille
+    document.getElementById('add-family').addEventListener('click', function () {
+        const container = document.getElementById('family-list');
+        const newEntry = container.children[0].cloneNode(true);
+        clearFamilyFields(newEntry);
+        container.appendChild(newEntry);
+        attachRemoveFamilyListener(newEntry);
+    });
+
+    function clearFamilyFields(entry) {
+        entry.querySelectorAll('input, select').forEach(field => field.value = '');
+    }
+
+    function attachRemoveFamilyListener(entry) {
+        entry.querySelector('.remove-family').addEventListener('click', function () {
+            entry.remove();
+        });
+    }
+
+    // Récupération des données avant soumission
+    document.getElementById('applicationForm').addEventListener('submit', function (e) {
+        // Formation
+        const educationData = [];
+        document.querySelectorAll('.education-entry').forEach(entry => {
+            educationData.push({
+                from_year: entry.querySelector('.ed-from-year').value,
+                to_year: entry.querySelector('.ed-to-year').value,
+                school_name: entry.querySelector('.ed-school').value,
+                field_of_study: entry.querySelector('.ed-field').value,
+                diploma_received: entry.querySelector('.ed-diploma').value
+            });
+        });
+        document.getElementById('education_history').value = JSON.stringify(educationData);
+
+        // Expérience
+        const workData = [];
+        document.querySelectorAll('.work-entry').forEach(entry => {
+            workData.push({
+                from_year: entry.querySelector('.work-from-year').value,
+                to_year: entry.querySelector('.work-to-year').value,
+                company_name: entry.querySelector('.work-company').value,
+                position: entry.querySelector('.work-position').value
+            });
+        });
+        document.getElementById('work_experience').value = JSON.stringify(workData);
+
+        // Famille
+        const familyData = [];
+        document.querySelectorAll('.family-entry').forEach(entry => {
+            familyData.push({
+                member_type: entry.querySelector('.family-type').value,
+                name: entry.querySelector('.family-name').value,
+                phone_number: entry.querySelector('.family-phone').value,
+                email: entry.querySelector('.family-email').value,
+                position: entry.querySelector('.family-position').value,
+                work_place: entry.querySelector('.family-workplace').value
+            });
+        });
+        document.getElementById('family_members').value = JSON.stringify(familyData);
+    });
+</script>
+{% endblock %}

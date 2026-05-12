@@ -37,27 +37,52 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Allauth (doit être après django.contrib.auth)
+    "allauth_ui",           # ⚠️ Doit être AVANT allauth !
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "widget_tweaks",
+    "slippers",
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    
+    # Mes applications
     'main_apps.gestion',
     'main_apps.etudiant',
+    
+    # Third party apps
     "crispy_forms",
     "crispy_tailwind",
     'compressor',
 ]
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
+# Configuration Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
 
-
+# Configuration Compressor
 COMPRESS_ROOT = BASE_DIR / 'static'
-
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False  # Pour le développement
 
-# CORRECTION : Ajout des finders par défaut de Django + CompressorFinder
+# Configuration des finders pour les fichiers statiques
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+
+# Configuration des authentifications
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 
 MIDDLEWARE = [
@@ -68,6 +93,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # Allauth middleware
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -75,10 +103,11 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # new
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -123,9 +152,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -134,8 +163,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-CRISPY_TEMPLATE_PACK = "tailwind"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -143,3 +170,51 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Messages configuration
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
+# core/settings.py - Ajoutez ces lignes à la fin
+
+# Media files (fichiers uploadés)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Configuration Allauth
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/gestion/'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # En développement, à changer en production
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_LOGOUT_ON_GET = True  
+
+# core/settings.py
+
+# Stripe
+STRIPE_PUBLIC_KEY = 'pk_test_51OZvrVHSyTRfela52rzyp4AOAPKTYQ5qyRNHE7ldtpz5j7sZQUUWkkI5MGs73sIU3ifmSMNcnOA7j5xUWpkjuyaq00xa2huesl'
+STRIPE_SECRET_KEY = 'sk_test_51OZvrVHSyTRfela5omVE6gEk280bZq58DRWg37G0i2zxchfeXdenDgMoH9vlzfq84RQ2VXzfoJAAqpmVNZXB9inq004FG9HqCd'
+STRIPE_WEBHOOK_SECRET = 'whsec_votre_webhook_secret'
+
+# PayPal (optionnel)
+PAYPAL_CLIENT_ID = 'votre_client_id'
+PAYPAL_SECRET_KEY = 'votre_secret_key'
+PAYPAL_MODE = 'sandbox'  # 'sandbox' ou 'production'
