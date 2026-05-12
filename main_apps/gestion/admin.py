@@ -62,6 +62,7 @@ class StudentApplicationAdmin(admin.ModelAdmin):
             )
         }),
         ('Passeport et Visa', {
+            'classes': ('collapse',),
             'fields': ('passport_number', 'passport_expiration_date')
         }),
         ('Formation et Expériences', {
