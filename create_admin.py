@@ -11,11 +11,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 username = 'admin'
 email = 'adminstudent@gmail.com'
-password = 'adminstudentmaiga1234'
+password1 = 'adminstudentmaiga1234'
+password2 = 'adminstudentmaiga1234'
 
 if not User.objects.filter(username=username).exists():
     print("Création du superutilisateur...")
-    User.objects.create_superuser(username, email, password)
+    User.objects.create_superuser(username, email, password1, password2)
 else:
     print("Le superutilisateur existe déjà.")
 
