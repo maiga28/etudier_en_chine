@@ -10,7 +10,7 @@
             <a href="{% url 'application_list' %}"
                 class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Retour</a>
             {% if not app.physical_examination %}
-            <a href="{% url 'physical_exam_create' %}?application_id={{ application.id }}"
+            <a href="{% url 'physical_exam_create' %}?application_id={{ app.id }}"
                 class="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800">Remplir examen physique</a>
             {% endif %}
         </div>
@@ -36,12 +36,12 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500">Date de soumission</p>
-                    <p class="font-medium">{{ app.app_date|date:"d/m/Y H:i" }}</p>
+                    <p class="font-medium">{{ app.application_date|date:"d/m/Y H:i" }}</p>
                 </div>
             </div>
 
             <!-- Paiement en attente -->
-            {% if app.status == 'PENDING_PAYMENT' or not app.payment or app.payment.status == 'PENDING' %}
+            {% if app.status == 'PENDING_PAYMENT' %}
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                     <div class="flex items-start">
@@ -52,14 +52,14 @@
                         </svg>
                         <div class="flex-1">
                             <p class="text-yellow-800 font-medium">Paiement en attente</p>
-                            <p class="text-yellow-700 text-sm">Vous devez régler les frais de dossier pour finaliser
-                                votre inscription.</p>
+                            <p class="text-yellow-700 text-sm">Frais de dossier: 5.000.000 GNF<br>Vous devez régler les
+                                frais de dossier pour finaliser votre inscription.</p>
                         </div>
                     </div>
                 </div>
-                <a href="{% url 'payment_page' application.id %}"
+                <a href="{% url 'payment_page' app.id %}"
                     class="inline-flex items-center px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition text-lg font-semibold">
-                    💳 Payer maintenant
+                    💳 Payer 5.000.000 GNF
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -69,7 +69,7 @@
             {% endif %}
 
             <!-- Paiement réussi -->
-            {% if application.payment and application.payment.status == 'SUCCESS' %}
+            {% if app.payment.status == 'SUCCESS' %}
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div class="flex items-start">
@@ -80,7 +80,27 @@
                         </svg>
                         <div class="flex-1">
                             <p class="text-green-800 font-medium">✓ Paiement confirmé</p>
-                            <p class="text-green-700 text-sm">Votre dossier est en cours de traitement par notre équipe.
+                            <p class="text-green-700 text-sm">Montant: {{ app.payment.amount|floatformat:0 }}
+                                GNF<br>Date: {{ app.payment.paid_at|date:"d/m/Y H:i"|default:"Date inconnue" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Dossier en attente de validation -->
+            {% if app.status == 'PENDING' %}
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="flex-1">
+                            <p class="text-blue-800 font-medium">⏳ Dossier en cours de traitement</p>
+                            <p class="text-blue-700 text-sm">Votre dossier est en cours de traitement par notre équipe.
                             </p>
                         </div>
                     </div>
@@ -95,23 +115,24 @@
                 <h2 class="font-semibold text-gray-800">Informations personnelles</h2>
             </div>
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><span class="text-gray-500">Nom complet:</span> {{ app.family_name }} {{
-                    app.given_name }}</div>
+                <div><span class="text-gray-500">Nom complet:</span> {{ app.family_name }} {{ app.given_name }}</div>
                 <div><span class="text-gray-500">Nom chinois:</span> {{ app.chinese_name|default:"-" }}</div>
                 <div><span class="text-gray-500">Genre:</span> {{ app.get_gender_display }}</div>
                 <div><span class="text-gray-500">Nationalité:</span> {{ app.nationality }}</div>
-                <div><span class="text-gray-500">Date de naissance:</span> {{ app.birth_date|date:"d/m/Y" }}
-                </div>
+                <div><span class="text-gray-500">Date de naissance:</span> {{ app.birth_date|date:"d/m/Y" }}</div>
                 <div><span class="text-gray-500">Âge:</span> {{ app.age }}</div>
                 <div><span class="text-gray-500">Lieu de naissance:</span> {{ app.place_of_birth }}</div>
                 <div><span class="text-gray-500">Langue maternelle:</span> {{ app.native_language }}</div>
-                <div><span class="text-gray-500">Niveau d'études:</span> {{ app.get_highest_education_display }}
-                </div>
+                <div><span class="text-gray-500">Niveau d'études:</span> {{ app.get_highest_education_display }}</div>
                 <div><span class="text-gray-500">Profession:</span> {{ app.occupation|default:"-" }}</div>
-                <div class="col-span-2"><span class="text-gray-500">État de santé:</span> {{
-                    app.get_health_status_display }}</div>
-                <div class="col-span-2"><span class="text-gray-500">Loisirs:</span> {{ app.hobby|default:"-" }}
+                <div><span class="text-gray-500">Situation matrimoniale:</span> {{ app.get_marital_status_display }}
                 </div>
+                <div><span class="text-gray-500">Religion:</span> {{ app.religion|default:"-" }}</div>
+                <div class="col-span-2"><span class="text-gray-500">État de santé:</span>
+                    {{app.get_health_status_display }}</div>
+                <div class="col-span-2"><span class="text-gray-500">Loisirs:</span> {{ app.hobby|default:"-" }}</div>
+                <div class="col-span-2"><span class="text-gray-500">Émigrant de Chine:</span>
+                    {{app.is_emigrant_from_china|yesno:"Oui,Non" }}</div>
             </div>
         </div>
 
@@ -122,8 +143,9 @@
             </div>
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><span class="text-gray-500">Numéro:</span> {{ app.passport_number }}</div>
-                <div><span class="text-gray-500">Date d'expiration:</span> {{
-                    app.passport_expiration_date|date:"d/m/Y" }}</div>
+                <div><span class="text-gray-500">Date d'expiration:</span>
+                    {{ app.passport_expiration_date|date:"d/m/Y"}}
+                </div>
             </div>
         </div>
 
@@ -168,14 +190,33 @@
         <!-- Contact -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="bg-gray-50 px-6 py-3 border-b">
-                <h2 class="font-semibold text-gray-800">Contact et adresse</h2>
+                <h2 class="font-semibold text-gray-800">Contact et adresses</h2>
             </div>
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><span class="text-gray-500">Email:</span> {{ app.personal_email }}</div>
                 <div><span class="text-gray-500">Téléphone:</span> {{ app.home_address_phone }}</div>
                 <div><span class="text-gray-500">Mobile:</span> {{ app.home_address_mobile|default:"-" }}</div>
-                <div class="col-span-2"><span class="text-gray-500">Adresse:</span> {{ app.home_address_street
-                    }}, {{ app.home_address_city_province }}, {{ app.home_address_country }}</div>
+                <div><span class="text-gray-500">Code postal:</span> {{ app.home_address_zipcode|default:"-" }}</div>
+                <div class="col-span-2"><span class="text-gray-500">Adresse:</span> {{ app.home_address_street }},
+                    {{ app.home_address_city_province }}, {{ app.home_address_country }}</div>
+                <div class="col-span-2"><span class="text-gray-500">Adresse actuelle:</span>
+                    {% if app.same_current_as_home %}Identique à l'adresse domicile{% else %}{{ app.current_address }}
+                    {% endif %}</div>
+            </div>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gray-50 px-6 py-3 border-b">
+                <h2 class="font-semibold text-gray-800">Réseaux sociaux</h2>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><span class="text-gray-500">Facebook:</span> {{ app.facebook_account|default:"-" }}</div>
+                <div><span class="text-gray-500">WeChat:</span> {{ app.wechat_account|default:"-" }}</div>
+                <div><span class="text-gray-500">LinkedIn:</span> {{ app.linkedin_account|default:"-" }}</div>
+                <div><span class="text-gray-500">Twitter:</span> {{ app.twitter_account|default:"-" }}</div>
+                <div><span class="text-gray-500">QQ:</span> {{ app.qq_account|default:"-" }}</div>
+                <div><span class="text-gray-500">MSN:</span> {{ app.msn_account|default:"-" }}</div>
             </div>
         </div>
 
@@ -189,9 +230,8 @@
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
                         <span class="text-green-600 font-medium">✓ Examen complété</span>
-                        <p class="text-sm text-gray-500 mt-1">Date: {{
-                            app.physical_examination.examination_date|date:"d/m/Y"|default:"Non renseignée" }}
-                        </p>
+                        <p class="text-sm text-gray-500 mt-1">Date:
+                            {{app.physical_examination.examination_date|date:"d/m/Y"|default:"Non renseignée" }}</p>
                         {% if app.physical_examination.is_medically_fit %}
                         <p class="text-sm text-green-600 mt-1">Apte médicalement</p>
                         {% else %}
@@ -205,7 +245,7 @@
                 {% else %}
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <span class="text-orange-600">⏳ Examen physique non complété</span>
-                    <a href="{% url 'physical_exam_create' %}?app_id={{ app.id }}"
+                    <a href="{% url 'physical_exam_create' %}?application_id={{ app.id }}"
                         class="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition">Remplir
                         l'examen</a>
                 </div>

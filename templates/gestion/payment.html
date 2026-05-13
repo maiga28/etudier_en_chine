@@ -35,7 +35,7 @@
                 <div class="border-t border-gray-200 dark:border-gray-700 my-3 pt-3">
                     <div class="flex justify-between">
                         <span class="text-gray-900 dark:text-white font-bold">Montant à payer :</span>
-                        <span class="text-red-600 font-bold text-xl">{{ payment.amount }} €</span>
+                        <span class="text-red-600 font-bold text-xl">{{ payment.amount|floatformat:0 }} GNF</span>
                     </div>
                 </div>
             </div>
@@ -144,35 +144,49 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-gray-700 dark:text-gray-300 mb-2">Numéro de téléphone *</label>
-                    <input type="tel" id="phone_number" placeholder="+XXX XXX XXX XXX"
+                    <input type="tel" id="phone_number" placeholder="+224 XXX XXX XXX"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
-                    <p class="text-xs text-gray-500 mt-1">Format international recommandé</p>
+                    <p class="text-xs text-gray-500 mt-1">Format international: +224 pour la Guinée</p>
                 </div>
                 <div id="operator-info" class="text-sm text-gray-600">
                     <p>📌 Vous recevrez un code de confirmation sur votre téléphone</p>
+                    <p class="text-xs text-gray-500 mt-1">Opérateurs supportés: Orange Guinée, MTN Guinée</p>
                 </div>
             </div>
         </div>
 
+        <!-- Message si déjà payé -->
+        {% if payment.is_paid %}
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <p class="text-green-800">✓ Cette demande a déjà été payée.</p>
+            </div>
+        </div>
+        {% else %}
         <!-- Bouton de paiement -->
         <button id="pay-button"
             class="w-full mt-6 bg-red-700 text-white py-3 rounded-lg hover:bg-red-800 transition text-lg font-semibold">
-            Payer {{ payment.amount }} €
+            Payer {{ payment.amount|floatformat:0 }} GNF
         </button>
+        {% endif %}
 
         <p class="text-xs text-gray-500 text-center mt-4">
             🔒 Paiement sécurisé. Vos informations ne sont pas stockées.
         </p>
 
         <div class="text-center mt-6">
-            <a href="{% url 'gestion' %}" class="text-sm text-gray-500 hover:text-gray-700">
-                ← Retour sans payer
+            <a href="{% url 'application_detail' application.id %}" class="text-sm text-gray-500 hover:text-gray-700">
+                ← Retour à ma demande
             </a>
         </div>
     </div>
 </div>
 
-<!-- Stripe JS -->
+<!-- Stripe JS (uniquement si Stripe est activé) -->
+{% if not payment.is_paid %}
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     // Initialisation Stripe
@@ -196,24 +210,25 @@
     const radioButtons = document.querySelectorAll('.payment-radio');
 
     let currentMethod = 'stripe';
-    let paymentIntentClientSecret = null;
 
     // Gestion du changement de méthode de paiement
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function () {
-            currentMethod = this.value;
+    if (radioButtons.length > 0) {
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function () {
+                currentMethod = this.value;
 
-            if (currentMethod === 'stripe') {
-                stripeForm.classList.remove('hidden');
-                mobileMoneyForm.classList.add('hidden');
-                payButton.textContent = 'Payer par carte {{ payment.amount }} €';
-            } else {
-                stripeForm.classList.add('hidden');
-                mobileMoneyForm.classList.remove('hidden');
-                payButton.textContent = `Payer par ${getMethodName(currentMethod)} {{ payment.amount }} €`;
-            }
+                if (currentMethod === 'stripe') {
+                    stripeForm.classList.remove('hidden');
+                    mobileMoneyForm.classList.add('hidden');
+                    payButton.textContent = 'Payer par carte {{ payment.amount|floatformat:0 }} GNF';
+                } else {
+                    stripeForm.classList.add('hidden');
+                    mobileMoneyForm.classList.remove('hidden');
+                    payButton.textContent = `Payer par ${getMethodName(currentMethod)} {{ payment.amount|floatformat:0 }} GNF`;
+                }
+            });
         });
-    });
+    }
 
     function getMethodName(method) {
         const names = {
@@ -252,44 +267,59 @@
             if (error) {
                 document.getElementById('card-errors').textContent = error.message;
                 payButton.disabled = false;
-                payButton.textContent = 'Payer {{ payment.amount }} €';
+                payButton.textContent = 'Payer {{ payment.amount|floatformat:0 }} GNF';
             } else {
                 window.location.href = "{% url 'payment_success' application.id %}";
             }
         } catch (err) {
             document.getElementById('card-errors').textContent = err.message;
             payButton.disabled = false;
-            payButton.textContent = 'Payer {{ payment.amount }} €';
+            payButton.textContent = 'Payer {{ payment.amount|floatformat:0 }} GNF';
         }
     }
 
-    // Paiement Mobile Money (simulation)
+    // Paiement Mobile Money (simulation - à remplacer par API réelle)
     async function payWithMobileMoney() {
         const phone = document.getElementById('phone_number').value;
+        const method = currentMethod;
+
+        let operatorName = '';
+        if (method === 'orange_money') operatorName = 'Orange Money';
+        else if (method === 'mtn_money') operatorName = 'MTN Mobile Money';
+        else operatorName = 'Wave';
 
         if (!phone) {
             alert('Veuillez entrer votre numéro de téléphone');
             return;
         }
 
+        // Validation simple du numéro guinéen
+        if (!phone.match(/^\+224\d{9}$/)) {
+            alert('Format invalide. Utilisez +224 suivi de 9 chiffres (ex: +224 123 456 789)');
+            return;
+        }
+
         payButton.disabled = true;
         payButton.textContent = 'Envoi de la demande...';
 
-        // Simulation d'appel API
+        // TODO: Intégrer l'API réelle de Orange Money / MTN Money / Wave
+        // Pour l'instant, simulation
         setTimeout(() => {
-            alert(`✅ Demande de paiement envoyée à ${phone}\n📌 Un code de confirmation vous sera envoyé par SMS.`);
+            alert(`✅ Demande de paiement de 5.000.000 GNF envoyée à ${phone} via ${operatorName}\n📌 Vous allez recevoir un code de confirmation par SMS.`);
             window.location.href = "{% url 'payment_success' application.id %}";
         }, 1500);
     }
 
     // Gestion du clic sur le bouton
-    payButton.addEventListener('click', () => {
-        if (currentMethod === 'stripe') {
-            payWithStripe();
-        } else {
-            payWithMobileMoney();
-        }
-    });
+    if (payButton) {
+        payButton.addEventListener('click', () => {
+            if (currentMethod === 'stripe') {
+                payWithStripe();
+            } else {
+                payWithMobileMoney();
+            }
+        });
+    }
 </script>
 
 <style>
@@ -302,4 +332,21 @@
         box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
     }
 </style>
+{% endif %}
+
+<!-- Affichage si déjà payé -->
+{% if payment.is_paid %}
+<style>
+    .payment-radio {
+        display: none;
+    }
+
+    #stripe-form,
+    #mobile-money-form,
+    #pay-button {
+        display: none;
+    }
+</style>
+{% endif %}
+
 {% endblock %}

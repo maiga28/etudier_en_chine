@@ -1,4 +1,4 @@
-import os
+'''import os
 import django
 
 # 1. On indique à Django où se trouvent les réglages
@@ -18,7 +18,7 @@ if not User.objects.filter(username=username).exists():
     print("Création du superutilisateur...")
     User.objects.create_superuser(username, email, password)
 else:
-    print("Le superutilisateur existe déjà.")
+    print("Le superutilisateur existe déjà.")'''
 
 
 
