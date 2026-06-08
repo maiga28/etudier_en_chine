@@ -1,0 +1,334 @@
+<!-- templates/dashboard/admin_dashboard.html -->
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord Administrateur{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tableau de Bord Administrateur</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">
+                Bonjour, {{ user.username }} ! Gérez toutes les demandes d'admission.
+            </p>
+        </div>
+
+        <!-- Statistiques globales -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Demandes</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ total_applications }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">En Attente Paiement</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ pending_payment }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-orange-100 dark:bg-orange-900 rounded-full">
+                        <svg class="w-6 h-6 text-orange-600 dark:text-orange-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">En Cours d'Examen</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ reviewing }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Acceptées</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ accepted_applications }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deuxième ligne de stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Rejetées</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ rejected }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
+                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Info Requises</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ needs_info }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-full">
+                        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Examens Médicaux</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ physical_exams_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demandes récentes -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Demandes Récentes</h2>
+                <a href="{% url 'application_list' %}"
+                    class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                    Voir tout →
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                ID</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Utilisateur</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Nom</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Date</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Statut</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for app in recent_applications %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">#{{ app.id
+                                }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                {{ app.user.username|default:"-" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ app.full_name }}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">{{ app.nationality }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                {{ app.application_date|date:"d/m/Y H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full 
+                                    {% if app.status == 'ACCEPTED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                    {% elif app.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
+                                    {% elif app.status == 'REVIEWING' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300
+                                    {% elif app.status == 'PENDING_PAYMENT' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
+                                    {% elif app.status == 'PENDING' %}bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300
+                                    {% elif app.status == 'NEEDS_INFO' %}bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <div class="relative inline-block text-left">
+                                    <button onclick="toggleDropdown('dropdown-{{ app.id }}')"
+                                        class="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50">
+                                        Changer statut
+                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="dropdown-{{ app.id }}"
+                                        class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-700">
+                                        <div class="py-1">
+                                            <form method="post"
+                                                action="{% url 'update_application_status' app.id 'ACCEPTED' %}"
+                                                class="inline w-full">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="block w-full text-left px-4 py-2 text-sm text-green-700 dark:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-700">✅
+                                                    Accepter</button>
+                                            </form>
+                                            <form method="post"
+                                                action="{% url 'update_application_status' app.id 'REJECTED' %}"
+                                                class="inline w-full">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="block w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">❌
+                                                    Rejeter</button>
+                                            </form>
+                                            <form method="post"
+                                                action="{% url 'update_application_status' app.id 'REVIEWING' %}"
+                                                class="inline w-full">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="block w-full text-left px-4 py-2 text-sm text-blue-700 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700">🔍
+                                                    Mettre en examen</button>
+                                            </form>
+                                            <form method="post"
+                                                action="{% url 'update_application_status' app.id 'PENDING' %}"
+                                                class="inline w-full">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="block w-full text-left px-4 py-2 text-sm text-orange-700 dark:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-700">⏳
+                                                    En attente</button>
+                                            </form>
+                                            <form method="post"
+                                                action="{% url 'update_application_status' app.id 'NEEDS_INFO' %}"
+                                                class="inline w-full">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="block w-full text-left px-4 py-2 text-sm text-purple-700 dark:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700">ℹ️
+                                                    Demander infos</button>
+                                            </form>
+                                            <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                            <a href="{% url 'application_detail' app.id %}"
+                                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">📄
+                                                Voir détails</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <p>Aucune demande pour le moment</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Liens rapides admin -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div
+                class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-gray-900 dark:text-white">
+                <h3 class="text-xl font-bold mb-2m">📊 Toutes les Demandes</h3>
+                <p class="mb-4">Gérer toutes les demandes d'admission</p>
+                <a href="{% url 'application_list' %}"
+                    class="inline-flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Accéder →
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-gray-900 dark:text-white">
+                <h3 class="text-xl font-bold mb-2">🏥 Examens Médicaux</h3>
+                <p class="text-green-500 mb-4">Gérer les examens physiques</p>
+                <a href="{% url 'physical_exam_list' %}"
+                    class="inline-flex items-center px-4 py-2 bg-white text-green-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Accéder →
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-gray-900 dark:text-white">
+                <h3 class="text-xl font-bold mb-2">💰 Paiements</h3>
+                <p class="text-purple-500 mb-4">Suivi des paiements</p>
+                <a href="{% url 'payment_list' %}"
+                    class="inline-flex items-center px-4 py-2 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Accéder →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour le dropdown -->
+<script>
+    function toggleDropdown(id) {
+        const dropdown = document.getElementById(id);
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+        } else {
+            dropdown.classList.add('hidden');
+        }
+    }
+
+    // Fermer le dropdown quand on clique ailleurs
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('[onclick^="toggleDropdown"]')) {
+            document.querySelectorAll('[id^="dropdown-"]').forEach(dropdown => {
+                dropdown.classList.add('hidden');
+            });
+        }
+    });
+</script>
+{% endblock %}

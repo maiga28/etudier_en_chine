@@ -200,12 +200,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Configuration Allauth
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/gestion/'
-LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard_redirect'
+ACCOUNT_LOGIN_REDIRECT_URL = 'dashboard_redirect'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'index'
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # En développement, à changer en production
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_LOGOUT_ON_GET = True  
+
+# settings.py
+
+# Allauth settings
+
 
 # core/settings.py
 

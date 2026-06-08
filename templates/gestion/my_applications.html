@@ -1,0 +1,304 @@
+<!-- templates/gestion/my_applications.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}Mes demandes d'admission{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Mes demandes d'admission</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2">
+                        Gérez toutes vos demandes d'inscription
+                    </p>
+                </div>
+                <div>
+                    <a href="{% url 'application_create' %}"
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-700 to-red-600 text-white rounded-lg hover:from-red-800 hover:to-red-700 transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Nouvelle demande
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-6">
+            <div class="flex flex-wrap gap-3">
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-red-600 text-white"
+                    data-status="all">
+                    Toutes
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="PENDING_PAYMENT">
+                    En attente de paiement
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="PENDING">
+                    En validation
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="REVIEWING">
+                    En examen
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="ACCEPTED">
+                    Acceptées
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="REJECTED">
+                    Rejetées
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    data-status="NEEDS_INFO">
+                    Infos requises
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste des demandes -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                N° dossier
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Date de création
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Nom complet
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Nationalité
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Statut
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Paiement
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Examen physique
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for application in applications %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                            data-status="{{ application.status }}">
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                                #{{ application.id }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                {{ application.application_date|date:"d/m/Y H:i" }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                {{ application.full_name }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                {{ application.nationality }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full 
+                                    {% if application.status == 'ACCEPTED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                    {% elif application.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
+                                    {% elif application.status == 'REVIEWING' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300
+                                    {% elif application.status == 'PENDING_PAYMENT' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
+                                    {% elif application.status == 'PENDING' %}bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300
+                                    {% elif application.status == 'NEEDS_INFO' %}bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                {% if application.payment %}
+                                {% if application.payment.status == 'SUCCESS' %}
+                                <span class="text-green-600 dark:text-green-400">✓ Payé</span>
+                                <br>
+                                <span class="text-xs text-gray-500">{{
+                                    application.payment.paid_at|date:"d/m/Y"|default:"" }}</span>
+                                {% elif application.payment.status == 'PENDING' %}
+                                <span class="text-yellow-600 dark:text-yellow-400">⏳ En attente</span>
+                                <br>
+                                <a href="{% url 'payment_page' application.id %}"
+                                    class="text-xs text-red-600 hover:text-red-800">
+                                    Payer maintenant →
+                                </a>
+                                {% else %}
+                                <span class="text-gray-500">Non initié</span>
+                                <br>
+                                <a href="{% url 'payment_page' application.id %}"
+                                    class="text-xs text-red-600 hover:text-red-800">
+                                    Payer →
+                                </a>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-gray-500">Non initié</span>
+                                <br>
+                                <a href="{% url 'payment_page' application.id %}"
+                                    class="text-xs text-red-600 hover:text-red-800">
+                                    Payer →
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                {% if application.physical_examination %}
+                                <span class="text-green-600 dark:text-green-400">✓ Complété</span>
+                                {% if application.physical_examination.is_medically_fit %}
+                                <br><span class="text-xs text-green-500">Apte</span>
+                                {% else %}
+                                <br><span class="text-xs text-red-500">Non apte</span>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-red-600 dark:text-red-400">✗ Non complété</span>
+                                <br>
+                                <a href="{% url 'physical_exam_create' %}?application_id={{ application.id }}"
+                                    class="text-xs text-yellow-600 hover:text-yellow-800">
+                                    Compléter →
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'application_detail' application.id %}"
+                                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                        title="Voir les détails">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    {% if not application.physical_examination %}
+                                    <a href="{% url 'physical_exam_create' %}?application_id={{ application.id }}"
+                                        class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                                        title="Compléter l'examen physique">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                    {% if not application.payment or application.payment.status != 'SUCCESS' %}
+                                    <a href="{% url 'payment_page' application.id %}"
+                                        class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
+                                        title="Procéder au paiement">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <p class="text-lg font-medium">Aucune demande d'admission</p>
+                                <p class="text-sm mt-2">Vous n'avez pas encore créé de demande d'admission.</p>
+                                <a href="{% url 'application_create' %}"
+                                    class="inline-flex items-center mt-4 px-4 py-2 bg-gradient-to-r from-red-700 to-red-600 text-white rounded-lg hover:from-red-800 hover:to-red-700 transition">
+                                    Créer ma première demande
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section d'aide -->
+        <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300">Besoin d'aide ?</h3>
+                    <p class="text-blue-700 dark:text-blue-400 mt-1">
+                        Une question sur votre demande ? Contactez notre équipe à
+                        <strong>contact@etudierenchine.com</strong> ou appelez-nous au <strong>+33 1 23 45 67
+                            89</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour les filtres -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const tableRows = document.querySelectorAll('tbody tr[data-status]');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+
+                // Mise à jour du style des boutons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-red-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                });
+                this.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                this.classList.add('bg-red-600', 'text-white');
+
+                // Filtrage des lignes
+                tableRows.forEach(row => {
+                    if (status === 'all' || row.getAttribute('data-status') === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

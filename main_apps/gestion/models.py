@@ -11,13 +11,34 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
 import json
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
+
+
+# main_apps/gestion/models.py
+from django.db import models
+from django.core.validators import MinLengthValidator, MaxLengthValidator, RegexValidator
+from django.utils import timezone
+from django.conf import settings
+import json
 
 class StudentApplication(models.Model):
     """
     Modèle pour le formulaire d'admission (入学申请表)
     """
+    
+    # === Lien avec l'utilisateur (AJOUTÉ) ===
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='applications',
+        null=True,
+        blank=True,
+        verbose_name="Utilisateur"
+    )
     
     # === Informations personnelles ===
     family_name = models.CharField(
@@ -314,6 +335,8 @@ class StudentApplication(models.Model):
         verbose_name = "Demande d'admission"
         verbose_name_plural = "Demandes d'admission"
         ordering = ['-application_date']
+        # Contrainte: un utilisateur ne peut avoir qu'une seule demande par passeport
+        unique_together = ['user', 'passport_number']
     
     def __str__(self):
         return f"{self.family_name} {self.given_name} - {self.application_date.strftime('%Y-%m-%d')}"
@@ -1104,3 +1127,27 @@ class PhysicalExamination(models.Model):
         # Mettre à jour le statut de la demande
         self.application.status = 'PENDING'  # En attente de traitement admin
         self.application.save() '''
+
+# main_apps/gestion/models.py - Ajoutez en bas
+
+
+
+class UserProfile(models.Model):
+    """Extension du modèle User pour ajouter des informations supplémentaires"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    is_student = models.BooleanField(default=True)
+    applications = models.ManyToManyField(StudentApplication, blank=True, related_name='applicants')
+    
+    def __str__(self):
+        return f"Profil de {self.user.username}"
+
+# Signal pour créer automatiquement un profil lors de l'inscription
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

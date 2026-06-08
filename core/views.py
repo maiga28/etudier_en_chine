@@ -1,10 +1,11 @@
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 import json
+
 import stripe
 from django.conf import settings
 from django.urls import reverse
@@ -12,10 +13,36 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from main_apps.gestion.models import StudentApplication, Payment, PhysicalExamination
+from django.contrib.auth.views import LoginView
+# core/views.py ou main_apps/gestion/views.py
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.urls import reverse
+from main_apps.gestion.models import StudentApplication
+
+# core/views.py ou main_apps/gestion/views.py
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.urls import reverse
+from main_apps.gestion.models import StudentApplication,PhysicalExamination
 
 # Configuration Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+# core/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def profile_redirect(request):
+    """Redirige vers le dashboard approprié"""
+    if request.user.is_superuser or request.user.is_staff:
+        return redirect('admin_dashboard')
+    else:
+        return redirect('user_dashboard')
+ 
 def index(request):
     return render(request, 'index.html')
 def universities(request):
@@ -42,6 +69,17 @@ def contact(request):
 
 
 # ... vos autres vues ...
+class CustomLoginView(LoginView):
+    """Vue de connexion personnalisée avec redirection basée sur le rôle"""
+    
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_superuser or user.is_staff:
+            return reverse('admin_dashboard')
+        else:
+            return reverse('user_dashboard')
+        return reverse('index')
+
 
 def login_view(request):
     """Page de connexion"""
@@ -159,7 +197,21 @@ def application_create(request):
 # === DEMANDES D'ADMISSION ===
 @login_required
 def application_create(request):
-    """Création d'une nouvelle demande d'admission"""
+    """Création d'une nouvelle demande d'admission pour l'utilisateur connecté"""
+    
+    # Vérifier si l'utilisateur a déjà une demande en cours
+    existing_application = StudentApplication.objects.filter(
+        user=request.user,  # Filtrer par l'utilisateur connecté
+        status__in=['PENDING_PAYMENT', 'PENDING', 'REVIEWING']
+    ).first()
+    
+    if existing_application:
+        messages.warning(
+            request, 
+            'Vous avez déjà une demande en cours. Veuillez compléter celle-ci avant d\'en créer une nouvelle.'
+        )
+        return redirect('application_detail', pk=existing_application.id)
+    
     if request.method == 'POST':
         try:
             # Récupération des données JSON
@@ -167,8 +219,11 @@ def application_create(request):
             work_experience = json.loads(request.POST.get('work_experience', '[]'))
             family_members = json.loads(request.POST.get('family_members', '[]'))
             
-            # Création de l'application
+            # Création de l'application avec l'utilisateur connecté
             application = StudentApplication.objects.create(
+                # === LIEN AVEC L'UTILISATEUR (AJOUTÉ) ===
+                user=request.user,  # ← Très important !
+                
                 # Informations personnelles
                 family_name=request.POST.get('family_name'),
                 given_name=request.POST.get('given_name'),
@@ -245,6 +300,34 @@ def application_create(request):
     return render(request, 'gestion/application_form.html')
 
 # Vue pour la page de paiement
+@staff_member_required
+def payment_list(request):
+    """Liste de tous les paiements (admin uniquement)"""
+    
+    # Utilisez select_related pour optimiser les requêtes
+    payments = Payment.objects.select_related('application').all().order_by('-created_at')
+    
+    # Statistiques
+    total_payments = payments.count()
+    pending_payments = payments.filter(status='PENDING').count()
+    success_payments = payments.filter(status='SUCCESS').count()
+    failed_payments = payments.filter(status='FAILED').count()
+    refunded_payments = payments.filter(status='REFUNDED').count()
+    
+    # Calcul du montant total (optionnel)
+    from django.db.models import Sum
+    total_amount = payments.filter(status='SUCCESS').aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    context = {
+        'payments': payments,
+        'total_payments': total_payments,
+        'pending_payments': pending_payments,
+        'success_payments': success_payments,
+        'failed_payments': failed_payments,
+        'refunded_payments': refunded_payments,
+        'total_amount': total_amount,
+    }
+    return render(request, 'gestion/payment_list.html', context)
 # === PAIEMENTS ===
 @login_required
 def payment_page(request, application_id):
@@ -354,19 +437,124 @@ def payment_webhook(request):
     
     return JsonResponse({'status': 'success'})
 
+@login_required
+@staff_member_required  # Seulement pour les admins
 def application_list(request):
+    """Liste de TOUTES les demandes (admin uniquement)"""
     applications = StudentApplication.objects.all().order_by('-application_date')
     return render(request, 'gestion/application_list.html', {'applications': applications})
-
+@login_required
+@login_required
 def application_detail(request, pk):
-    app = get_object_or_404(StudentApplication, pk=pk)
-    return render(request, 'gestion/application_detail.html', {'app': app})
-
+    """Détail d'une demande d'admission avec vérification"""
+    
+    # Vérifier si la demande existe
+    try:
+        if request.user.is_staff or request.user.is_superuser:
+            application = StudentApplication.objects.get(pk=pk)
+        else:
+            application = StudentApplication.objects.get(pk=pk, user=request.user)
+    except StudentApplication.DoesNotExist:
+        messages.error(request, f'La demande d\'admission #{pk} n\'existe pas.')
+        if request.user.is_staff or request.user.is_superuser:
+            return redirect('application_list')
+        else:
+            return redirect('user_dashboard')
+    
+    # Récupérer les objets associés
+    physical_examination = getattr(application, 'physical_examination', None)
+    payment = getattr(application, 'payment', None)
+    
+    context = {
+        'application': application,
+        'physical_examination': physical_examination,
+        'payment': payment,
+    }
+    return render(request, 'gestion/application_detail.html', context)
+# core/views.py
+@login_required
+def my_applications(request):
+    """Liste des demandes de l'utilisateur connecté"""
+    applications = StudentApplication.objects.filter(
+        user=request.user
+    ).order_by('-application_date')
+    
+    return render(request, 'gestion/my_applications.html', {'applications': applications})
+@login_required
 def application_success(request, pk):
     app = get_object_or_404(StudentApplication, pk=pk)
     return render(request, 'gestion/application_success.html', {'app': app})
-
+@login_required
+@staff_member_required
+def update_application_status(request, id):
+    """
+    Met à jour le statut d'une demande d'admission
+    Version sécurisée avec support GET et POST
+    """
+    app = get_object_or_404(StudentApplication, pk=id)
+    
+    # Récupération du nouveau statut
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        referer = request.POST.get('next', reverse('application_detail', args=[id]))
+    else:
+        new_status = request.GET.get('status')
+        referer = request.GET.get('next', reverse('application_detail', args=[id]))
+    
+    # Validation
+    if not new_status:
+        messages.error(request, '⚠️ Veuillez sélectionner un statut')
+        return HttpResponseRedirect(referer)
+    
+    # Liste des statuts valides
+    valid_statuses = dict(StudentApplication.Status.choices)
+    
+    if new_status not in valid_statuses:
+        messages.error(request, f'⚠️ Statut invalide: {new_status}')
+        return HttpResponseRedirect(referer)
+    
+    # Éviter les mises à jour inutiles
+    if app.status == new_status:
+        messages.info(request, f'ℹ️ La demande est déjà au statut "{valid_statuses[new_status]}"')
+        return HttpResponseRedirect(referer)
+    
+    # Sauvegarde de l'ancien statut
+    old_status_display = app.get_status_display()
+    old_status = app.status
+    
+    # Mise à jour
+    app.status = new_status
+    app.save()
+    
+    # Message de succès personnalisé
+    status_messages = {
+        'ACCEPTED': f'✅ Demande ACCEPTÉE - {app.full_name}',
+        'REJECTED': f'❌ Demande REJETÉE - {app.full_name}',
+        'REVIEWING': f'🔍 Demande en EXAMEN - {app.full_name}',
+        'NEEDS_INFO': f'ℹ️ Informations requises pour {app.full_name}',
+        'PENDING_PAYMENT': f'💰 En attente de paiement - {app.full_name}',
+        'PENDING': f'⏳ En attente de validation - {app.full_name}',
+    }
+    
+    message = status_messages.get(new_status, f'📝 Statut mis à jour : {old_status_display} → {app.get_status_display()}')
+    messages.success(request, message)
+    
+    # Redirection
+    return HttpResponseRedirect(referer)
+    
+    # En GET, afficher un formulaire de confirmation
+    return render(request, 'gestion/update_status_form.html', {
+        'application': app,
+        'status_choices': StudentApplication.Status.choices
+    })
 # Vues pour les examens physiques
+@login_required
+def physical_exam_list(request):
+    exam_list = PhysicalExamination.objects.all()
+    context = {
+        'exam_list':exam_list
+    }
+    return render(request,'gestion/physical_exam_list.html',context)
 def physical_exam_create(request):
     application_id = request.GET.get('application_id')
     if not application_id:
@@ -429,11 +617,11 @@ def physical_exam_create(request):
             messages.error(request, f'Erreur lors de l\'enregistrement: {str(e)}')
     
     return render(request, 'gestion/physical_exam_form.html', {'application': application})
-
+@login_required
 def physical_exam_detail(request, pk):
     physical_exam = get_object_or_404(PhysicalExamination, pk=pk)
     return render(request, 'gestion/physical_exam_detail.html', {'physical_exam': physical_exam})
-
+@login_required
 def physical_exam_success(request, pk):
     physical_exam = get_object_or_404(PhysicalExamination, pk=pk)
     return render(request, 'gestion/physical_exam_success.html', {'physical_exam': physical_exam})

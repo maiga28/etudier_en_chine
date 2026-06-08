@@ -1,0 +1,198 @@
+<!-- templates/gestion/physical_exam_list.html -->
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}Liste des examens physiques{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Examens physiques</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2">
+                        Gérez tous les examens médicaux des candidats
+                    </p>
+                </div>
+                <div>
+                    <a href="{% url 'physical_exam_create' %}"
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-700 to-red-600 text-white rounded-lg hover:from-red-800 hover:to-red-700 transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Nouvel examen
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total examens</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ total_count }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aptes</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ fit_count }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Non aptes</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ not_fit_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des examens -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                ID</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Candidat</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Nationalité</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Date examen</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Aptitude</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Demande liée</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for exam in physical_exams %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">#{{ exam.id }}</td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ exam.name }}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">Né(e) le {{
+                                    exam.birth_date|date:"d/m/Y" }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ exam.nationality }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                {{ exam.examination_date|date:"d/m/Y"|default:"Non renseignée" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if exam.is_medically_fit %}
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                    ✓ Apte
+                                </span>
+                                {% else %}
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+                                    ✗ Non apte
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                {% if exam.application %}
+                                <a href="{% url 'application_detail' exam.application.id %}"
+                                    class="text-red-600 hover:text-red-800">
+                                    #{{ exam.application.id }} - {{ exam.application.full_name }}
+                                </a>
+                                {% else %}
+                                <span class="text-gray-400">Non liée</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'physical_exam_detail' exam.id %}"
+                                        class="text-red-600 hover:text-red-800" title="Voir les détails">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    {% if not exam.application %}
+                                    <a href="{% url 'physical_exam_create' %}?exam_id={{ exam.id }}"
+                                        class="text-blue-600 hover:text-blue-800" title="Lier à une demande">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m1.102-4.768a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
+                                <p class="text-lg font-medium">Aucun examen physique trouvé</p>
+                                <p class="text-sm mt-2">Commencez par créer un examen médical.</p>
+                                <a href="{% url 'physical_exam_create' %}"
+                                    class="inline-flex items-center mt-4 px-4 py-2 bg-gradient-to-r from-red-700 to-red-600 text-white rounded-lg hover:from-red-800 hover:to-red-700 transition">
+                                    Créer un examen
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
