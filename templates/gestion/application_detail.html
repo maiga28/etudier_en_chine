@@ -7,10 +7,10 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Détail de la demande #{{ app.id }}</h1>
         <div class="space-x-2">
-            <a href="{% url 'application_list' %}"
+            <a href="{% if user.is_authenticated %}{% url 'dashboard_redirect' %}{% else %}{% url 'index' %}{% endif %}"
                 class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Retour</a>
             {% if not app.physical_examination %}
-            <a href="{% url 'physical_exam_create' %}?application_id={{ app.id }}"
+            <a href="{% url 'physical_exam_create' %}?application_id={{app.id}}"
                 class="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800">Remplir examen physique</a>
             {% endif %}
         </div>
@@ -29,8 +29,7 @@
                             {% elif app.status == 'REVIEWING' %}bg-blue-100 text-blue-800
                             {% elif app.status == 'PENDING_PAYMENT' %}bg-yellow-100 text-yellow-800
                             {% elif app.status == 'PENDING' %}bg-orange-100 text-orange-800
-                            {% else %}bg-gray-100 text-gray-800{% endif %}">
-                            {{ app.get_status_display }}
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">{{ app.get_status_display }}
                         </span>
                     </div>
                 </div>
@@ -80,8 +79,8 @@
                         </svg>
                         <div class="flex-1">
                             <p class="text-green-800 font-medium">✓ Paiement confirmé</p>
-                            <p class="text-green-700 text-sm">Montant: {{ app.payment.amount|floatformat:0 }}
-                                GNF<br>Date: {{ app.payment.paid_at|date:"d/m/Y H:i"|default:"Date inconnue" }}</p>
+                            <p class="text-green-700 text-sm">Montant:{{app.payment.amount|floatformat:0}}GNF<br>Date:
+                                {{ app.payment.paid_at|date:"d/m/Y H:i"|default:"Date inconnue" }}</p>
                         </div>
                     </div>
                 </div>
@@ -131,8 +130,8 @@
                 <div class="col-span-2"><span class="text-gray-500">État de santé:</span>
                     {{app.get_health_status_display }}</div>
                 <div class="col-span-2"><span class="text-gray-500">Loisirs:</span> {{ app.hobby|default:"-" }}</div>
-                <div class="col-span-2"><span class="text-gray-500">Émigrant de Chine:</span>
-                    {{app.is_emigrant_from_china|yesno:"Oui,Non" }}</div>
+                <div class="col-span-2"><span class="text-gray-500">Émigrant de
+                        Chine:</span>{{app.is_emigrant_from_china|yesno:"Oui,Non" }}</div>
             </div>
         </div>
 
@@ -244,10 +243,9 @@
                 </div>
                 {% else %}
                 <div class="flex items-center justify-between flex-wrap gap-4">
-                    <span class="text-orange-600">⏳ Examen physique non complété</span>
-                    <a href="{% url 'physical_exam_create' %}?application_id={{ app.id }}"
-                        class="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition">Remplir
-                        l'examen</a>
+                    <span class="text-orange-600">⏳ Examen physique non complété</span>class="px-4 py-2 bg-red-700
+                    text-white rounded-lg">Remplir
+                    l'examen</a>
                 </div>
                 {% endif %}
             </div>

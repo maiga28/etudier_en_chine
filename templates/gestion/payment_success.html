@@ -59,7 +59,7 @@
 
         <!-- Boutons d'action -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="{% url 'gestion' %}"
+            <a href="{% if user.is_authenticated %}{% url 'dashboard_redirect' %}{% else %}{% url 'index' %}{% endif %}"
                 class="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition">
                 Tableau de bord
             </a>

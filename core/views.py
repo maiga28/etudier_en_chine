@@ -106,94 +106,6 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'auth/register.html', {'form': form})
 
-
-
-'''amount = 500.00  # Montant fixe pour les frais de dossier
-def application_create(request):
-    if request.method == 'POST':
-        try:
-            # Récupération des données JSON
-            education_history = json.loads(request.POST.get('education_history', '[]'))
-            work_experience = json.loads(request.POST.get('work_experience', '[]'))
-            family_members = json.loads(request.POST.get('family_members', '[]'))
-            
-            # Création de l'application
-            application = StudentApplication.objects.create(
-                # Informations personnelles
-                family_name=request.POST.get('family_name'),
-                given_name=request.POST.get('given_name'),
-                chinese_name=request.POST.get('chinese_name', ''),
-                gender=request.POST.get('gender'),
-                marital_status=request.POST.get('marital_status'),
-                nationality=request.POST.get('nationality'),
-                country_of_birth=request.POST.get('country_of_birth'),
-                birth_date=request.POST.get('birth_date'),
-                place_of_birth=request.POST.get('place_of_birth'),
-                native_language=request.POST.get('native_language'),
-                highest_education=request.POST.get('highest_education'),
-                religion=request.POST.get('religion', ''),
-                employer_or_institution=request.POST.get('employer_or_institution', ''),
-                occupation=request.POST.get('occupation', ''),
-                health_status=request.POST.get('health_status'),
-                is_emigrant_from_china=request.POST.get('is_emigrant_from_china') == 'on',
-                hobby=request.POST.get('hobby', ''),
-                
-                # Passeport
-                passport_number=request.POST.get('passport_number'),
-                passport_expiration_date=request.POST.get('passport_expiration_date'),
-                
-                # Historiques JSON
-                education_history=education_history,
-                work_experience=work_experience,
-                family_members=family_members,
-                
-                # Soutien financier
-                guarantor_name=request.POST.get('guarantor_name'),
-                guarantor_address=request.POST.get('guarantor_address'),
-                guarantor_tel=request.POST.get('guarantor_tel'),
-                guarantor_relationship=request.POST.get('guarantor_relationship'),
-                guarantor_organization=request.POST.get('guarantor_organization', ''),
-                guarantor_email=request.POST.get('guarantor_email', ''),
-                
-                # Adresses
-                home_address_street=request.POST.get('home_address_street'),
-                home_address_city_province=request.POST.get('home_address_city_province'),
-                home_address_country=request.POST.get('home_address_country'),
-                home_address_phone=request.POST.get('home_address_phone'),
-                home_address_mobile=request.POST.get('home_address_mobile', ''),
-                home_address_zipcode=request.POST.get('home_address_zipcode', ''),
-                same_current_as_home=request.POST.get('same_current_as_home') == 'on',
-                current_address=request.POST.get('current_address', ''),
-                personal_email=request.POST.get('personal_email'),
-                
-                # Réseaux sociaux
-                facebook_account=request.POST.get('facebook_account', ''),
-                wechat_account=request.POST.get('wechat_account', ''),
-                linkedin_account=request.POST.get('linkedin_account', ''),
-                twitter_account=request.POST.get('twitter_account', ''),
-                qq_account=request.POST.get('qq_account', ''),
-                msn_account=request.POST.get('msn_account', ''),
-            )
-            
-            # Créer automatiquement l'objet Payment associé
-            from main_apps.gestion.models import Payment
-            Payment.objects.create(
-                application=application,
-                amount=amount,
-                currency='EUR',
-                status='PENDING'
-            )
-            
-            messages.success(request, 'Votre demande a été créée avec succès ! Veuillez procéder au paiement.')
-            
-            # ✅ REDIRECTION UNIQUE VERS LE PAIEMENT
-            return redirect('payment_page', application_id=application.pk)
-            
-        except Exception as e:
-            messages.error(request, f'Erreur lors de la soumission: {str(e)}')
-            return redirect('application_create')
-    
-    return render(request, 'gestion/application_form.html')'''
 # === DEMANDES D'ADMISSION ===
 @login_required
 def application_create(request):
@@ -451,9 +363,9 @@ def application_detail(request, pk):
     # Vérifier si la demande existe
     try:
         if request.user.is_staff or request.user.is_superuser:
-            application = StudentApplication.objects.get(pk=pk)
+            app = StudentApplication.objects.get(pk=pk)
         else:
-            application = StudentApplication.objects.get(pk=pk, user=request.user)
+            app = StudentApplication.objects.get(pk=pk, user=request.user)
     except StudentApplication.DoesNotExist:
         messages.error(request, f'La demande d\'admission #{pk} n\'existe pas.')
         if request.user.is_staff or request.user.is_superuser:
@@ -462,11 +374,11 @@ def application_detail(request, pk):
             return redirect('user_dashboard')
     
     # Récupérer les objets associés
-    physical_examination = getattr(application, 'physical_examination', None)
-    payment = getattr(application, 'payment', None)
+    physical_examination = getattr(app, 'physical_examination', None)
+    payment = getattr(app, 'payment', None)
     
     context = {
-        'application': application,
+        'app': app,
         'physical_examination': physical_examination,
         'payment': payment,
     }
@@ -484,69 +396,31 @@ def my_applications(request):
 def application_success(request, pk):
     app = get_object_or_404(StudentApplication, pk=pk)
     return render(request, 'gestion/application_success.html', {'app': app})
-@login_required
-@staff_member_required
-def update_application_status(request, id):
+def update_application_status(request, id, new_status):
     """
-    Met à jour le statut d'une demande d'admission
-    Version sécurisée avec support GET et POST
+    Met à jour le statut directement via l'URL
+    URL: /application/<id>/update-status/<new_status>/
     """
     app = get_object_or_404(StudentApplication, pk=id)
     
-    # Récupération du nouveau statut
-    if request.method == 'POST':
-        new_status = request.POST.get('status')
-        referer = request.POST.get('next', reverse('application_detail', args=[id]))
-    else:
-        new_status = request.GET.get('status')
-        referer = request.GET.get('next', reverse('application_detail', args=[id]))
-    
-    # Validation
-    if not new_status:
-        messages.error(request, '⚠️ Veuillez sélectionner un statut')
-        return HttpResponseRedirect(referer)
-    
     # Liste des statuts valides
-    valid_statuses = dict(StudentApplication.Status.choices)
+    valid_statuses = [status[0] for status in StudentApplication.Status.choices]
     
     if new_status not in valid_statuses:
         messages.error(request, f'⚠️ Statut invalide: {new_status}')
-        return HttpResponseRedirect(referer)
-    
-    # Éviter les mises à jour inutiles
-    if app.status == new_status:
-        messages.info(request, f'ℹ️ La demande est déjà au statut "{valid_statuses[new_status]}"')
-        return HttpResponseRedirect(referer)
+        return redirect('application_detail', pk=id)
     
     # Sauvegarde de l'ancien statut
     old_status_display = app.get_status_display()
-    old_status = app.status
     
     # Mise à jour
     app.status = new_status
     app.save()
     
-    # Message de succès personnalisé
-    status_messages = {
-        'ACCEPTED': f'✅ Demande ACCEPTÉE - {app.full_name}',
-        'REJECTED': f'❌ Demande REJETÉE - {app.full_name}',
-        'REVIEWING': f'🔍 Demande en EXAMEN - {app.full_name}',
-        'NEEDS_INFO': f'ℹ️ Informations requises pour {app.full_name}',
-        'PENDING_PAYMENT': f'💰 En attente de paiement - {app.full_name}',
-        'PENDING': f'⏳ En attente de validation - {app.full_name}',
-    }
+    # Message de succès
+    messages.success(request, f'✅ Statut mis à jour : {old_status_display} → {app.get_status_display()}')
     
-    message = status_messages.get(new_status, f'📝 Statut mis à jour : {old_status_display} → {app.get_status_display()}')
-    messages.success(request, message)
-    
-    # Redirection
-    return HttpResponseRedirect(referer)
-    
-    # En GET, afficher un formulaire de confirmation
-    return render(request, 'gestion/update_status_form.html', {
-        'application': app,
-        'status_choices': StudentApplication.Status.choices
-    })
+    return redirect('application_detail', pk=id)
 # Vues pour les examens physiques
 @login_required
 def physical_exam_list(request):
